@@ -176,3 +176,24 @@ We manage our resolver files as follows:
         └── Register.ts
 ```
 Here, the User entity's resolvers live in the modules/user folder and are labeled according to functionality.
+
+# Login
+
+ - Using express sessions to keep user logged in with a cookie. 
+ - Using Redis to store sessions. 
+ - Using 'ioredis' lib as redis client
+ - Using "cors" lib so we don't have problems with cookies.
+
+### install dependencies
+```sh
+yarn add express-session connect-redis ioredis cors
+```
+### install types for these new dependencies
+```sh
+yarn add -D @types/express-session @types/connect-redis @types/ioredis @types/cors
+```
+
+### session is considered a 'middleware'
+
+# Gotcha (graphql playground settings)
+### Make sure to set: "request.credentials": "include" or you will not see your cookie show up in the chrome devtools application/Storage/Cookies/

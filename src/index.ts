@@ -3,7 +3,18 @@ import { ApolloServer } from 'apollo-server-express';
 import { buildSchema, formatArgumentValidationError } from 'type-graphql';
 import Express from 'express';
 import { createConnection } from 'typeorm';
+import session from 'express-session';
+// per the docs, we need to pass a function to create the RedisStore
+// we will name import connectRedis to signify that function
+import connectRedis from 'connect-redis';
+// instantiated in a seperate file in the src dir
+import { redis } from './redis'
+import cors from 'cors';
+// Resolvers
 import { RegisterResolver } from './modules/user/Register';
+import { LoginResolver } from './modules/user/Login';
+import { MeResolver } from './modules/user/Me';
+
 
 // instanciate server within a main function so we can use async/await
 const main = async () => {
@@ -12,15 +23,60 @@ const main = async () => {
     // ApolloServer constructor requires a schema or type definitions.
     // that's where graphql comes in..
     const schema = await buildSchema({
-        resolvers: [RegisterResolver],
+        resolvers: [RegisterResolver, LoginResolver, MeResolver],
     });
     const apolloServer = new ApolloServer({
         schema,
         formatError: formatArgumentValidationError,
+        // we can pass in a function to the 'context' key. 
+        // this creates our context which we can access in the resolver
+        // for accessing session data
+        context: ({req}: any) => ({ req })
     });
 
     // instantiate application
     const app = Express();
+
+    // connnect Redis
+    const RedisStore = connectRedis(session);
+
+    // session middleware must be instantiated prior to passing it to
+    // applyMiddleware({...})
+    app.use(
+        cors({
+            credentials: true,
+            // 'origin' set to host that we expect our frontend to be at
+            origin: "http://localhost:3000"
+        })
+    );
+    
+    // we want the session to be applied before we hit the resolvers.
+    app.use(session({
+            store: new RedisStore({
+                client: redis as any, // 'as any' for typescript
+            }),
+            // name for our cookie
+            name: 'qid',
+            // this should be an enviornment variable, hard coded here for
+            // simplicity.
+            secret: 'aslkdfjoiq12312',
+            // 'resave', 'saveUninitialized' set to false so that we don't constantly create a new session for a user unless we change something
+            resave: false,
+            saveUninitialized: false,
+            // cookie config
+            cookie: {
+                httpOnly: true,
+                // this will evaluate to 'true' ONLY in production
+                secure: process.env.NODE_ENV === 'production',
+                // 7 years
+                maxAge: 1000 * 60 * 60 * 24 * 7 * 365,
+            },
+        }));
+    // now that we have the session middleware added we are going to be
+    // able to access the request object
+
+
+
     // pass application to apolloServer via the
     // applyMiddleware function.
     apolloServer.applyMiddleware({ app });
