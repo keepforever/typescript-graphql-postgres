@@ -1,23 +1,38 @@
-import { Resolver, Query, Mutation, Arg } from "type-graphql";
+import { Resolver, Query, Mutation, Arg, Authorized, UseMiddleware } from "type-graphql";
 import bcrypt from "bcryptjs";
 
 import { User } from "../../entity/User";
 import { RegisterInput } from "./register/RegisterInput";
+import { isAuth } from "../middleware/isAuth";
+import { logger } from "../middleware/logger";
 
 @Resolver()
 export class RegisterResolver {
+    // We could pass parameters to Authorized(["ADMIN", "MODERATOR"])
+    // Could also be a number Authorized<number>([1, 7, 42])
+    // Authorization determination will be made in the function passed
+    // to authChecker property in buildSchema (called in index.ts)
+    @Authorized()
     @Query(() => String)
     async hello() {
-        return "Hello World!";
+        return 'Hello World!';
+    }
+
+    // an alternative way to check if user is authenticted.
+    // we pass in the isAuth method we created in the middleware folder. 
+    @UseMiddleware(isAuth, logger)
+    @Query(() => String)
+    async goodbye() {
+        return 'Goodbye Cruel World!';
     }
 
     @Mutation(() => User)
-    async register(@Arg("data")
+    async register(@Arg('data')
     {
         email,
         firstName,
         lastName,
-        password
+        password,
     }: RegisterInput): Promise<User> {
         const hashedPassword = await bcrypt.hash(password, 12);
 
@@ -25,7 +40,7 @@ export class RegisterResolver {
             firstName,
             lastName,
             email,
-            password: hashedPassword
+            password: hashedPassword,
         }).save();
 
         return user;

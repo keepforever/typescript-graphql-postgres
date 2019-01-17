@@ -8,13 +8,12 @@ import session from 'express-session';
 // we will name import connectRedis to signify that function
 import connectRedis from 'connect-redis';
 // instantiated in a seperate file in the src dir
-import { redis } from './redis'
+import { redis } from './redis';
 import cors from 'cors';
 // Resolvers
 import { RegisterResolver } from './modules/user/Register';
 import { LoginResolver } from './modules/user/Login';
 import { MeResolver } from './modules/user/Me';
-
 
 // instanciate server within a main function so we can use async/await
 const main = async () => {
@@ -24,14 +23,35 @@ const main = async () => {
     // that's where graphql comes in..
     const schema = await buildSchema({
         resolvers: [RegisterResolver, LoginResolver, MeResolver],
+        authChecker: ({ context: { req } }) => {
+            // here you can read user from context
+            // and check permission against roles argument
+            // that was specified in the @Authorized(['ADMIN']) decorator
+
+            // check request object to see if has a userId on it
+            // use '!!' to cast req.session.userId to boolean, which
+            // evaluates to 'true' if extant. 
+            // if (!!req.session.userId) {
+            //     return true;
+            // } else {
+            //     // typescript would yell if you didn't include the 'else'
+            //     // block because 'not all paths return a value', in other
+            //     // words, 
+            //     return false
+            // }
+            
+            // more concise if check 
+             return !!req.session.userId
+        },
     });
+
     const apolloServer = new ApolloServer({
         schema,
         formatError: formatArgumentValidationError,
-        // we can pass in a function to the 'context' key. 
+        // we can pass in a function to the 'context' key.
         // this creates our context which we can access in the resolver
         // for accessing session data
-        context: ({req}: any) => ({ req })
+        context: ({ req }: any) => ({ req }),
     });
 
     // instantiate application
@@ -46,12 +66,13 @@ const main = async () => {
         cors({
             credentials: true,
             // 'origin' set to host that we expect our frontend to be at
-            origin: "http://localhost:3000"
-        })
+            origin: 'http://localhost:3000',
+        }),
     );
-    
+
     // we want the session to be applied before we hit the resolvers.
-    app.use(session({
+    app.use(
+        session({
             store: new RedisStore({
                 client: redis as any, // 'as any' for typescript
             }),
@@ -71,11 +92,10 @@ const main = async () => {
                 // 7 years
                 maxAge: 1000 * 60 * 60 * 24 * 7 * 365,
             },
-        }));
+        }),
+    );
     // now that we have the session middleware added we are going to be
     // able to access the request object
-
-
 
     // pass application to apolloServer via the
     // applyMiddleware function.

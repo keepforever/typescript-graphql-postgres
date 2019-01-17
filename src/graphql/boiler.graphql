@@ -1,0 +1,26 @@
+query MeQuery {
+    me {
+        id
+        firstName
+        lastName
+        email
+        name
+    }
+}
+
+mutation MyLogin {
+    login(password: "a", email: "a") {
+        name
+        id
+        firstName
+        email
+    }
+}
+
+query MyHelloQuery {
+    hello
+}
+
+query MyGoodbyeQuery {
+    goodbye
+}
