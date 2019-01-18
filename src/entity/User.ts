@@ -23,6 +23,12 @@ export class User extends BaseEntity {
     @Column()
     password: string;
 
+    // in absence of the @Field() decorator, this field will only 
+    // be accessable on the server side and will not show up in 
+    // graphql schema. 
+    @Column('bool', { default: false })
+    confirmed: boolean;
+
     // this property is missing it's column flag, so, while it will be exposed to the schema, it will not be a database column, rather, it may be used to calulate another value that does get saved, i.e. name = firstName + lastName
     // Note, this would talk to the FieldResolver in the Register Module
     // but we have a better way to do it.

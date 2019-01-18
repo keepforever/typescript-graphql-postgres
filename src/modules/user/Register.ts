@@ -5,6 +5,9 @@ import { User } from "../../entity/User";
 import { RegisterInput } from "./register/RegisterInput";
 import { isAuth } from "../middleware/isAuth";
 import { logger } from "../middleware/logger";
+import { sendEmail } from "../utils/sendEmail";
+import { createConfirmationUrl } from "../utils/createConfirmationUrl";
+
 
 @Resolver()
 export class RegisterResolver {
@@ -43,6 +46,12 @@ export class RegisterResolver {
             password: hashedPassword,
         }).save();
 
-        return user;
+        // after creating the user in the database we send the
+        // confirmation email which, once clicked, will trigger a 
+        // mutation to toggle the 'confirmed' property of the User
+        // to 'true'.
+        await sendEmail(user.email,  await createConfirmationUrl(user.id));
+
+        return user;   
     }
 }

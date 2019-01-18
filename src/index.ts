@@ -14,6 +14,8 @@ import cors from 'cors';
 import { RegisterResolver } from './modules/user/Register';
 import { LoginResolver } from './modules/user/Login';
 import { MeResolver } from './modules/user/Me';
+import { ConfirmUserResolver } from './modules/user/ConfirmUser';
+
 
 // instanciate server within a main function so we can use async/await
 const main = async () => {
@@ -22,7 +24,12 @@ const main = async () => {
     // ApolloServer constructor requires a schema or type definitions.
     // that's where graphql comes in..
     const schema = await buildSchema({
-        resolvers: [RegisterResolver, LoginResolver, MeResolver],
+        resolvers: [
+            RegisterResolver, 
+            LoginResolver, 
+            MeResolver, 
+            ConfirmUserResolver
+        ],
         authChecker: ({ context: { req } }) => {
             // here you can read user from context
             // and check permission against roles argument

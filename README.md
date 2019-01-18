@@ -1,3 +1,12 @@
+## links to some dependency documentation
+
+### For sending confirmation emails:
+[NodeMailer](http://nodemailer.com/about/)
+
+### Main library behind this server: 
+[Type-GraphQL Bootstrapping Guide](https://19majkel94.github.io/type-graphql/docs/bootstrap.html)
+
+
 ## Below are some notes I took as I coded along.
 
 [Type-GraphQL Video 1](https://www.youtube.com/watch?v=8yZImm2A1KE)

@@ -30,6 +30,14 @@ export class LoginResolver {
             return null;
         }
 
+        // check to see if user has confirmed their email
+        // a user cannot login if they're not confirmed. 
+        if(!user.confirmed){
+            // could potentially throw back an error saying something like
+            // "User has not confirmed their emai"
+            return null
+        }
+
         // create a cookie. setting the 'userId' on the session to 
         // the id of the user found above. 
         // we add bang '!' after session to specify we assume 
