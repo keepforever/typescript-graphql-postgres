@@ -1,4 +1,5 @@
 import 'reflect-metadata';
+import 'dotenv/config';
 import { ApolloServer } from 'apollo-server-express';
 import { buildSchema, formatArgumentValidationError } from 'type-graphql';
 import Express from 'express';
@@ -20,7 +21,31 @@ import { ConfirmUserResolver } from './modules/user/ConfirmUser';
 // instanciate server within a main function so we can use async/await
 const main = async () => {
     // createConnection will read from ormconfig.json to make the connection to the database.
-    await createConnection();
+    // await createConnection();
+
+    // FOR DOCKER
+    // There is a delay between when server starts and postgres
+    // container is ready to recieve connections.  
+    let retries = 10;
+    while (retries) {
+        try{
+            await createConnection();
+            break;
+        } catch(err) {
+            console.log(err)
+            retries -= 1
+            console.log(`${retries} retries remaining...`)
+            // wait 5 seconds before retrying connection to 
+            // postgres
+            await new Promise(res => {
+                console.log(`
+                    test env var 
+                    ${process.env.DB_HOST!}
+                `);
+                setTimeout(res, 5000)
+            })
+        }
+    }
     // ApolloServer constructor requires a schema or type definitions.
     // that's where graphql comes in..
     const schema = await buildSchema({
@@ -87,7 +112,8 @@ const main = async () => {
             name: 'qid',
             // this should be an enviornment variable, hard coded here for
             // simplicity.
-            secret: 'aslkdfjoiq12312',
+            // secret: 'aslkdfjoiq12312',
+            secret: process.env.INDEX_SECRET!,
             // 'resave', 'saveUninitialized' set to false so that we don't constantly create a new session for a user unless we change something
             resave: false,
             saveUninitialized: false,

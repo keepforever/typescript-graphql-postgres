@@ -8,6 +8,22 @@ query MeQuery {
     }
 }
 
+
+mutation MyRegister {
+  register(
+    data: { 
+      password: "a", 
+      email: "a@a.com", 
+      firstName: "a", 
+      lastName: "a" 
+    }
+  ) {
+    id
+    name
+  }
+}
+
+
 mutation MyLogin {
     login(password: "a", email: "a") {
         name

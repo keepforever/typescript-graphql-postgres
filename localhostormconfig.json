@@ -1,11 +1,14 @@
 {
+    "name": "default",
     "type": "postgres",
-    "host": "db",
+    "host": "localhost",
     "port": 5432,
     "username": "postgres",
     "password": "postgres",
     "database": "typegraphql-example",
     "synchronize": true,
     "logging": true,
-    "entities": ["entity/*.*"]
+    "entities": [
+        "src/entity/*.*"
+    ]
 }
