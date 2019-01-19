@@ -29,7 +29,9 @@ const main = async () => {
     let retries = 10;
     while (retries) {
         try{
+            console.log("before createConnection");
             await createConnection();
+            console.log('after createConnection')
             break;
         } catch(err) {
             console.log(err)
@@ -132,7 +134,9 @@ const main = async () => {
 
     // pass application to apolloServer via the
     // applyMiddleware function.
+    console.log('before applyMiddlware');
     apolloServer.applyMiddleware({ app });
+    console.log('after applyMiddlware')
     // set server port to listen on.
     app.listen(4000, () => {
         console.log(`
