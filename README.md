@@ -1,9 +1,11 @@
+### project instanciated ~ Node v11.6.0-ish
+
 ## links to some dependency documentation
 
 ### For sending confirmation emails:
 [NodeMailer](http://nodemailer.com/about/)
 
-### Main library behind this server: 
+### Main library behind this server:
 [Type-GraphQL Bootstrapping Guide](https://19majkel94.github.io/type-graphql/docs/bootstrap.html)
 
 
@@ -188,8 +190,8 @@ Here, the User entity's resolvers live in the modules/user folder and are labele
 
 # Login
 
- - Using express sessions to keep user logged in with a cookie. 
- - Using Redis to store sessions. 
+ - Using express sessions to keep user logged in with a cookie.
+ - Using Redis to store sessions.
  - Using 'ioredis' lib as redis client
  - Using "cors" lib so we don't have problems with cookies.
 
