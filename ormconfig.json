@@ -1,4 +1,4 @@
-{   
+{
     "name": "default",
     "type": "postgres",
     "host": "db",
@@ -8,5 +8,5 @@
     "database": "typegraphql-example",
     "synchronize": true,
     "logging": true,
-    "entities": ["entity/*.*"]
+    "entities": ["dist/entity/*.*"]
 }
