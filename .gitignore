@@ -1,3 +1,8 @@
 node_modules
+<<<<<<< HEAD
 dist/
 pgdata/
+=======
+pgdata/
+dump.rdb
+>>>>>>> 05-confirmation-email

@@ -15,6 +15,8 @@ import { RegisterResolver } from './modules/user/Register';
 import { LoginResolver } from './modules/user/Login';
 import { MeResolver } from './modules/user/Me';
 import { ConfirmUserResolver } from './modules/user/ConfirmUser';
+import { ForgotPasswordResolver } from './modules/user/ForgotPassword';
+import { ChangePasswordResolver } from './modules/user/ChangePassword';
 
 
 // instanciate server within a main function so we can use async/await
@@ -25,10 +27,12 @@ const main = async () => {
     // that's where graphql comes in..
     const schema = await buildSchema({
         resolvers: [
+            ChangePasswordResolver,
             RegisterResolver, 
             LoginResolver, 
             MeResolver, 
-            ConfirmUserResolver
+            ConfirmUserResolver,
+            ForgotPasswordResolver
         ],
         authChecker: ({ context: { req } }) => {
             // here you can read user from context
