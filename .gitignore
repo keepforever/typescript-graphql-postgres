@@ -2,3 +2,5 @@ node_modules
 dist/
 pgdata/
 *.rdb
+dump.rdb
+.env
