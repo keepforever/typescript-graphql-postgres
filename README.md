@@ -1,5 +1,7 @@
 ## links to some dependency documentation
 
+[Ts-Jest](https://github.com/kulshekhar/ts-jest)
+
 ### For sending confirmation emails:
 [NodeMailer](http://nodemailer.com/about/)
 
