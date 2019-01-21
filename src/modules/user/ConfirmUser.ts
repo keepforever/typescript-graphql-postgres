@@ -2,6 +2,7 @@ import { Resolver, Mutation, Arg } from "type-graphql";
 
 import { redis } from "../../redis";
 import { User } from "../../entity/User";
+import { confirmUserPrefix } from "../constants/redisPrefixes";
 
 @Resolver()
 export class ConfirmUserResolver {
@@ -13,7 +14,7 @@ export class ConfirmUserResolver {
         // check if the token exists in redis.  If the token 
         // does exist, redis.get() will return the userId was 
         // saved under that key(token) value(userId) pair. 
-        const userId = await redis.get(token);
+        const userId = await redis.get(confirmUserPrefix + token);
 
         // if the token doesn't exist or has expired, the
         // resolver will return false back to the client. 

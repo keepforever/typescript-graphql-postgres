@@ -8,13 +8,26 @@ query MeQuery {
     }
 }
 
+mutation MyRegister {
+    register(
+        data: { firstName: "x", lastName: "x", password: "x", email: "x@x.com" }
+    ) {
+        id
+        name
+        email
+    }
+}
 mutation MyLogin {
-    login(password: "a", email: "a") {
+    login(password: "aaa", email: "x@x.com") {
         name
         id
         firstName
         email
     }
+}
+
+mutation MyConfirmUser {
+    confirmUser(token: "ba0e4ed1-3fe5-4ae3-be88-39a0b2d3f962")
 }
 
 query MyHelloQuery {
@@ -23,4 +36,19 @@ query MyHelloQuery {
 
 query MyGoodbyeQuery {
     goodbye
+}
+
+mutation MyForgotPassword {
+    forgotPassword(email: "x@x.com")
+}
+
+mutation MyChangePassword {
+    changePassword(
+        data: { token: "9b6a4918-f2d0-4997-9c18-f2bb36b9d8ec", password: "aaa" }
+    ) {
+        name
+        lastName
+        firstName
+        id
+    }
 }
