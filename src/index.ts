@@ -10,6 +10,8 @@ import connectRedis from 'connect-redis';
 // instantiated in a seperate file in the src dir
 import { redis } from './redis';
 import cors from 'cors';
+// config constants
+import { cookieName } from '../src/modules/constants/cookieName';
 // Resolvers
 import { RegisterResolver } from './modules/user/Register';
 import { LoginResolver } from './modules/user/Login';
@@ -17,7 +19,7 @@ import { MeResolver } from './modules/user/Me';
 import { ConfirmUserResolver } from './modules/user/ConfirmUser';
 import { ForgotPasswordResolver } from './modules/user/ForgotPassword';
 import { ChangePasswordResolver } from './modules/user/ChangePassword';
-
+import { LogoutResolver } from './modules/user/Logout';
 
 // instanciate server within a main function so we can use async/await
 const main = async () => {
@@ -27,6 +29,7 @@ const main = async () => {
     // that's where graphql comes in..
     const schema = await buildSchema({
         resolvers: [
+            LogoutResolver,
             ChangePasswordResolver,
             RegisterResolver, 
             LoginResolver, 
@@ -62,7 +65,7 @@ const main = async () => {
         // we can pass in a function to the 'context' key.
         // this creates our context which we can access in the resolver
         // for accessing session data
-        context: ({ req }: any) => ({ req }),
+        context: ({ req, res }: any) => ({ req, res }),
     });
 
     // instantiate application
@@ -88,7 +91,7 @@ const main = async () => {
                 client: redis as any, // 'as any' for typescript
             }),
             // name for our cookie
-            name: 'qid',
+            name: cookieName,
             // this should be an enviornment variable, hard coded here for
             // simplicity.
             secret: 'aslkdfjoiq12312',
